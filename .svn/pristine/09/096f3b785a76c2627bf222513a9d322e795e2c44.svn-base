@@ -1,0 +1,5 @@
+@import "../../../styles/item_attributes.scss";
+
+#container-details {
+        @include page_container;
+}

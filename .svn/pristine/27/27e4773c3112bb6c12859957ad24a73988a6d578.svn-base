@@ -1,0 +1,175 @@
+import React, { useEffect, useState } from "react";
+import {
+  IonList,
+  IonContent,
+  IonPage,
+  IonInfiniteScroll,
+  IonInfiniteScrollContent,
+} from "@ionic/react";
+import MyBooking from "./bookingCard/BookingCard";
+import * as EndPointURL from "../../../util/EndPointURL";
+import { httpGetCallWithoutHeader } from "../../../services/EndPointApi";
+import Header from "../../../components/Header";
+import Store from "../../../redux/Store";
+// import PaymentSuccess from "./PaymentSuccess";
+// import PaymentFailed from "./PaymentFailed";
+// import PaymentPending from "./PaymentPending";
+// import Footer from "./Footer";
+
+var pageNumber = 0;
+export default function MyBookingDetails(props) {
+  console.log('props' , props)
+  const [result, setResult] = useState([]);
+  const [disableInfiniteScroll, setDisableInfiniteScroll] = useState<boolean>(
+    false
+  );
+  const [title, setTitle] = useState("");
+  const [requestStatus, setRequestStatus] = useState("");
+  const [paymentPage, setPaymentPage] = useState("");
+  const [referenceNumber, setReferenceNumber] = useState();
+  
+
+  const getTitle = (status) => {
+    switch (status) {
+      case "PEND":
+        setTitle("PENDING");
+        break;
+      case "CONF":
+        setTitle("CONFIRMED");
+        break;
+      case "MT_DEL":
+        setTitle("COMPLETED");
+        break;
+      case "FCL_DEL":
+        setTitle("DELIVERED");
+        break;
+      case "INPRO":
+        setTitle("IN PROGRESS");
+        break;
+      default:
+        setTitle("PENDING");
+    }
+  };
+
+  const onCardClick = (item) => {
+    var userType = Store.getState().CheckUserStatus.user.userType;
+    let booking = {
+      booking: item?.bookingNumber,
+      containers: item?.containerList,
+      userType: userType,
+      status: props.match.params.status
+    };
+    props.history.push("/containerDetails", booking);
+  };
+
+  useEffect(() => {
+    var parameter = "";
+    pageNumber = 0;
+    fetchData(parameter);
+  }, []);
+
+  const footerProps = {
+    locationProps: props.history,
+  };
+
+  const fetchData = async (param) => {
+    const key = props.match.params.status;
+    setRequestStatus(key);
+    getTitle(key);
+    if (!param) {
+      param = "pgSize=10&pgNo=0&option=ALL&locale=en";
+    }
+
+    let appUrl = `${EndPointURL.bookingDetails}${key}&${param}`;
+
+    var response = await httpGetCallWithoutHeader(appUrl);
+    if (await response.success) {
+        setResult([...result, ...response.data.elements]);
+        console.log(response.data.elements);
+        setDisableInfiniteScroll(response.data.elements.length < 10);
+    }
+  }
+
+  async function searchNext($event: CustomEvent<void>) {
+    pageNumber = pageNumber + 1;
+    var param = "pgSize=10&pgNo=" + pageNumber + "&option=ALL&locale=en";
+    await fetchData(param);
+    ($event.target as HTMLIonInfiniteScrollElement).complete();
+  }
+
+  const goBack = () => {
+    props.history.push("/tabs/status");
+  }
+
+  return (
+    <IonPage>
+      <>
+        <Header label={title} action="" locationProps={props} customBack={true} backClick={() => goBack()} agentHeader={true}/>
+        <IonContent
+          fullscreen
+          scrollEvents={true}
+          onIonScrollStart={() => {}}
+          onIonScroll={() => {}}
+          onIonScrollEnd={() => {}}
+          hidden={paymentPage !== ""}
+          class="pageContainer"
+        >
+          <IonList style={{padding:'0px'}}>
+            {result.map((item, id) => (
+              <MyBooking
+              status={requestStatus}
+              key={id}
+              town={item?.containersToTown}
+              yard={item?.containersInYard}
+              dilivered ={item?.containersDelivered}
+              emptyDelivered = {item?.emptyContainersDelivered}
+              confirmed ={item?.containersConfirmed}
+              totalBooking={item?.containersBooked}
+              bookingNumber={item?.bookingNumber}
+              amount={item?.amountPaid ?? "0 AED"}
+              createOn={item?.createdOn}
+              count={item?.containerList.length ?? 0}
+              countTitle={title}
+              paymentStatus={item?.statusCode}
+              clickCard={() => onCardClick(item)}
+              paymentClick={(e) => {
+                setPaymentPage(e);
+                setReferenceNumber(item?.bookingNumber);
+                console.log('paymentPage', e)
+              }}
+            />
+            ))}
+          </IonList>
+
+          <IonInfiniteScroll
+            threshold="100px"
+            disabled={disableInfiniteScroll}
+            onIonInfinite={(e: CustomEvent<void>) => searchNext(e)}
+          >
+            <IonInfiniteScrollContent loadingText="Loading more..."></IonInfiniteScrollContent>
+          </IonInfiniteScroll>
+        </IonContent>
+        {/* <IonContent  fullscreen hidden={paymentPage == ""}>
+          <div hidden={paymentPage !== "success"}>
+            <PaymentSuccess 
+            referenceNumber={referenceNumber}
+            locationProps={props.history}/>
+          </div>
+          <div hidden={paymentPage !== "fail"}>
+            <PaymentFailed 
+            referenceNumber={referenceNumber}
+            locationProps={props.history}/>
+          </div>
+          <div hidden={paymentPage !== "pending"}>
+            <PaymentPending
+              hidden={true}
+              referenceNumber={referenceNumber}
+              locationProps={props.history}
+            />
+          </div>
+          </IonContent> */}
+      </>
+      {/* <Footer type={"paymentFooter"} footerProps={footerProps} /> */}
+    </IonPage>
+  );
+}

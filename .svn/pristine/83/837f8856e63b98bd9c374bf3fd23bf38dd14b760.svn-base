@@ -1,0 +1,63 @@
+import {
+  IonCol,
+  IonContent,
+  IonIcon,
+  IonPage,
+  IonRow,
+  IonToggle,
+} from "@ionic/react";
+import { alertCircle } from "ionicons/icons";
+import React, { useState } from "react";
+import "./BookTruck.scss";
+function BookTruck() {
+  const [truckCount, setTruckCount] = useState("");
+
+  const handleChange = () => {};
+  return (
+    <IonPage className="BookTruck-Location">
+      <IonContent>
+        <div className="main-content">
+          <IonRow>
+            <IonCol size="10">
+              <label> Drop Containers at mutiple Locations</label>
+            </IonCol>
+            <IonCol>
+              <IonToggle value="mushrooms" />
+            </IonCol>
+          </IonRow>
+          <IonRow>
+            <IonCol size="10">
+              <label>Drop Containers at mutiple Locations</label>
+            </IonCol>
+            <IonCol>
+              <IonToggle value="mushrooms" />
+            </IonCol>
+          </IonRow>
+          <IonRow>
+            <IonCol size="9">
+              <label>Number of Trucks Required</label>
+            </IonCol>
+            <IonCol style={{ textAlign: "center" }}>
+              {/* <TxtInput
+              name="truck"
+              type="text"
+              value={truckCount}
+              onChange={handleChange}
+            ></TxtInput> */}
+              <select style={{ marginLeft: "40%" }}>
+                <option value="0">0</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+              </select>
+            </IonCol>
+            <div className="alert-message">
+              <IonIcon icon={alertCircle}></IonIcon> max limit of 80 containers
+              is one truck
+            </div>
+          </IonRow>
+        </div>
+      </IonContent>
+    </IonPage>
+  );
+}
+export default BookTruck;

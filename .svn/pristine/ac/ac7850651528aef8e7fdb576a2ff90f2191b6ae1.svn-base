@@ -1,0 +1,96 @@
+@import "../styles/item_attributes.scss";
+
+.componentMargins{
+    @include componentMargins;
+    .paymentBreakUprightSide{
+      display: flex;
+      flex-direction: row-reverse;
+      flex: 1;
+      .bluePaymentLable{
+        font-weight: 600;
+        color: #0568AE;
+        font-size: 1rem;
+      }
+      
+      .payLabelLight {
+        @include lightBlackText;
+        text-align: right;
+      }
+    }
+
+    .paymentBreakUprightSidew{
+       
+        .bluePaymentLable{
+          font-weight: 600;
+          color: #0568AE;
+          font-size: 1rem;
+        }
+        
+        .payLabelLight {
+          @include lightBlackText;
+          text-align: right;
+        }
+      }
+    .margin-top{
+      margin-top: 1rem;
+    }
+    .payment-section{
+      border-bottom: 0.1rem solid #D7D7D7;
+      padding-bottom: 1rem;
+    }
+  }
+  .relativePosition {
+    position: relative;
+  }
+  div.smallUnderline::after {
+    left: 7%;
+    width:50%;
+    @include thickUnderLine
+  }
+  div.paymentBreakupUnderLine::after{
+    left: 0%;
+    @include thickUnderLine
+  }
+  .payLabel {
+    @include boldBlackText;
+  }
+  .payLabelLight {
+    @include lightBlackText;
+  }
+  .twoItem {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    width: 93%;
+    margin-left: 3.5%;
+  }
+  .eachElement {
+    width: 50%;
+  }
+  .upload-section{
+    @include componentMargins;
+    display: flex;
+    align-items: center;
+  }
+  .uploadLabel{
+    margin-left: 1rem;
+    text-decoration: underline;
+    color: #007FFF;
+    letter-spacing: 0px;
+    opacity: 1;
+    font-weight: 600;
+  }
+  .paymentBreakup{
+    flex: 1;
+    display: flex;
+    align-items: initial;
+  }
+  .paymentBreakupFirstRow{
+    flex: 1.8;
+    display: flex;
+    align-items: initial;
+    margin-right: 1rem;
+  }
+  .alignRight{
+      text-align: right;
+  }

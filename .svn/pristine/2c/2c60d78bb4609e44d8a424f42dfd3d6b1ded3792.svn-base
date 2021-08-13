@@ -1,0 +1,75 @@
+@import "../../styles/item_attributes.scss";
+
+.quick-book-page {
+  .quick-book-content {
+    --background: #{$darkBlue};
+
+    .header {
+      height: 10%;
+    }
+    .form-div {
+      margin-left: 1.25rem;
+      margin-right: 1.25rem;
+      padding-top: 1.25rem;
+      height: 90%;
+      background-color: $white;
+      padding-left: 1rem;
+      padding-right: 1rem;
+      border-radius: 1rem;
+      overflow: hidden;
+      position: relative;
+
+      .book-quick {
+        height: 100%;
+        overflow: auto;
+      }
+
+      .button-div {
+        display: flex;
+        justify-content: center;
+        @include button_box_shadow;
+
+        .button-holder {
+          @include icon_submit_button_holder;
+        }
+      }
+
+      .button-div {
+        display: flex;
+        flex-basis: 0;
+        position: absolute;
+        // width: 90%;
+
+        ion-button {
+          flex-grow: 1;
+          --border-style: solid;
+          --border-width: thin;
+          // position: absolute;
+        }
+        .quick-content {
+          overflow-y: scroll;
+          height: 80%;
+        }
+      }
+    }
+  }
+}
+#wrapper {
+  position: relative;
+  width: 350px;
+  overflow: hidden;
+}
+#container {
+  height: 350px;
+  overflow-y: scroll;
+  border: solid #000 1px;
+}
+.sticky {
+  position: absolute;
+}
+.right {
+  right: 0;
+}
+.bottom {
+  bottom: 0;
+}

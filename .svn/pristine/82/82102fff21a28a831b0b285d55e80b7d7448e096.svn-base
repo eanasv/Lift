@@ -1,0 +1,14 @@
+export const REGEX_MAP = {
+  TEXT: "^[A-Za-z0-9 ]+$",
+  NUM: "^\\d+$",
+  NUM_DEC: "^\\d*\\.\\d+$",
+  ALPHA_NUM: "/^[a-zA-Z0-9 ]*$/",
+  TEL_NUM: "^\\d+$",
+};
+
+export const termsAndConditionUrl =
+  "http://www.dubaitrade.ae/en/terms-conditions";
+
+  export const sessionTimeoutInSec = 60*30 * 1000;
+
+  export const truckNumber = 5;

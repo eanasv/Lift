@@ -1,0 +1,17 @@
+import React from "react";
+import "./Avatar.scss";
+interface avatarParam {
+  color: string;
+  name: string;
+}
+
+const RoundedAvatar: React.FC<avatarParam> = (avatarParam) => {
+  console.log(avatarParam.color);
+  return (
+    <div className="avatar" style={{ backgroundColor: `${avatarParam.color}` }}>
+      {/* {avatarParam.name} */}
+    </div>
+  );
+};
+
+export default RoundedAvatar;

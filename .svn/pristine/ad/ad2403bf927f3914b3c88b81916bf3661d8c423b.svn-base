@@ -1,0 +1,259 @@
+import { IonIcon } from "@ionic/react";
+import { arrowForwardOutline } from "ionicons/icons";
+import moment from "moment";
+import React, { useEffect, useState } from "react";
+import {
+  getAddressApi,
+  getRequestByContainer,
+  getRequestByDeclaration,
+  getTruckTypeApi,
+} from "../services/EndPointApi";
+import { truckNumber } from "../util/Constants";
+import { addTimeToDateTime } from "../util/Utilities";
+import DrpdownInput from "./dropdownInput/DrpdownInput";
+import TxtInput from "./txtinput/TxtInput";
+
+export default function BookQuick() {
+  const plusIcon = {
+    name: "plusQuick",
+    slot: "end",
+    class: "slotEnd",
+  };
+  const [form, setForm] = useState({
+    declNumber: "",
+    containerNumber: "",
+    truckCount: "",
+    date: "",
+    time: "",
+    truckType: "",
+    droplocation: "",
+    contactPerson: "",
+    contactNumber: "",
+    submitted: false,
+    valid: false,
+  });
+  const [errors, setErrors] = useState<any>({});
+  const [icon, seticon] = useState({
+    declNumber: plusIcon,
+    containerNumber: plusIcon,
+  });
+  const [listTruckType, setListTruckType] = useState([]);
+  const [timeAndAddress, settimeAndAddress] = useState({
+    address: [],
+    disbaleHr: 1,
+    dateAndTime: "",
+  });
+
+  useEffect(() => {
+    getTruck();
+    getListAddress();
+    getTodaysDate();
+  }, []);
+
+  const getTruck = async () => {
+    let res: any = await getTruckTypeApi();
+    {
+      if (res.success) {
+        setListTruckType(res.data);
+      }
+    }
+  };
+
+  const getListAddress = async () => {
+    let res: any = await getAddressApi();
+    var mindateOfDisable = addTimeToDateTime(
+      new Date(),
+      1 * res.disableHrs * 60 || 1
+    );
+    var formattedMindate = mindateOfDisable.toISOString();
+    settimeAndAddress({
+      address: res.addressDtoList,
+      disbaleHr: res.disableHrs,
+      dateAndTime: formattedMindate,
+    });
+  };
+  const getTodaysDate = () => {
+    let dateTime = new Date();
+    var tr = moment().format("YYYY-MM-DD");
+    console.log(tr);
+    let s = `${dateTime.getFullYear()}-${(dateTime.getMonth() + 1)
+      .toString()
+      .padStart(2, "0")}-${dateTime.getDate().toString().padStart(2, "0")}`;
+    console.log(s);
+    //setMinDate(s);
+  };
+
+  const minusIcon = {
+    name: "minusQ",
+    slot: "end",
+    class: "slotEnd",
+  };
+
+  var totalTruckNumber = Array.from({ length: truckNumber }, (_, i) => i + 1);
+
+  const blankIcon = { name: "", slot: "", class: "" };
+
+  const handleChange = (e: any, value: any) => {
+    console.log(e.target.name, e.target.value);
+    setErrors({ ...errors, [e.target.name]: "" });
+    if (e.target.name === "declNumber") {
+      console.log("declaaa");
+      form.containerNumber = "";
+      seticon({ containerNumber: minusIcon, declNumber: blankIcon });
+      console.log(icon);
+    } else if (e.target.name === "containerNumber") {
+      console.log("cont");
+      form.declNumber = "";
+      seticon({ declNumber: minusIcon, containerNumber: blankIcon });
+    }
+    setForm({
+      ...form,
+      [e.target.name]: value,
+    });
+
+    if (e.target.value === "") {
+      console.log("67676767");
+      seticon({ ...icon, [e.target.name]: plusIcon });
+      console.log(icon);
+    }
+    console.log(form);
+  };
+
+  const onBlur = async (e) => {
+    if (e.target.value && e.target.value != "") {
+      setErrors({ ...errors, [e.target.name]: "" });
+      let response: any;
+      if (e.target.name === "declNumber") {
+        response = await getRequestByDeclaration(form.declNumber);
+      } else {
+        response = await getRequestByContainer(form.containerNumber);
+      }
+      if (response && response.success) {
+        setErrors({
+          ...errors,
+          [e.target.name]: response.data.data.dataItems[0].noOfContainers
+            ? response.data.data.dataItems[0].noOfContainers +
+              " container selected"
+            : "1 Container Selected",
+        });
+      } else {
+        setErrors({
+          ...errors,
+          [e.target.name]:
+            response.data.data.dataItems[0].error ||
+            "Invalid " + e.target.lable,
+        });
+      }
+    }
+    //seticon({ declNumber: blankIcon, containerNumber: minusIcon });
+  };
+
+  return (
+    <>
+      <div className="book-quick">
+        <TxtInput
+          name={"declNumber"}
+          value={form.declNumber}
+          label="Declaration Number"
+          errors={errors.declNumber}
+          type="text"
+          required={true}
+          onChange={handleChange}
+          datatype="TEXT"
+          placeholder="Declaration Number"
+          icon={icon.declNumber}
+          onBlur={onBlur}
+        />
+        <TxtInput
+          name={"containerNumber"}
+          value={form.containerNumber}
+          label="Container Number"
+          errors={errors.containerNumber}
+          type="text"
+          required={true}
+          onChange={handleChange}
+          datatype="TEXT"
+          placeholder="Enter Number"
+          icon={icon.containerNumber}
+          onBlur={onBlur}
+        />
+        <div>
+          {" "}
+          <DrpdownInput
+            name={"truckCount"}
+            value={form.truckCount}
+            label="Truck Count"
+            errors={errors.truckCount}
+            type="text"
+            required={true}
+            onChange={handleChange}
+            datatype="TEXT"
+            placeholder="Enter Count"
+            listValues={totalTruckNumber}
+          />
+        </div>
+
+        <TxtInput
+          name={"date"}
+          value={form.date}
+          label="Date"
+          errors={errors.date}
+          type="text"
+          required={true}
+          onChange={handleChange}
+          datatype="TEXT"
+          placeholder=""
+        />
+        <TxtInput
+          name={"time"}
+          value={form.time}
+          label="Time"
+          errors={errors.time}
+          type="text"
+          required={true}
+          onChange={handleChange}
+          datatype="TEXT"
+          placeholder=""
+        />
+        <TxtInput
+          name={"truckType"}
+          value={form.truckType}
+          label="Truck Type"
+          errors={errors.truckType}
+          type="text"
+          required={true}
+          onChange={handleChange}
+          datatype="TEXT"
+          placeholder="Enter Type"
+        />
+        <TxtInput
+          name={"droplocation"}
+          value={form.droplocation}
+          label="Drop Location"
+          errors={errors.droplocation}
+          type="text"
+          required={true}
+          onChange={handleChange}
+          datatype="TEXT"
+          placeholder="Enter Address"
+        />
+        <TxtInput
+          name={"contactPerson"}
+          value={form.contactPerson}
+          label="Contact Person"
+          errors={errors.contactPerson}
+          type="text"
+          required={true}
+          onChange={handleChange}
+          datatype="TEXT"
+          placeholder="Name"
+        />
+      </div>
+      <div className="button-div">
+        <div className="button-holder" onClick={() => console.log("1")}>
+          <IonIcon slot="icon-only" icon={arrowForwardOutline} />
+        </div>
+      </div>
+    </>
+  );
+}

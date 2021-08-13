@@ -1,0 +1,67 @@
+#alert {
+  .text-style {
+    text-align: center;
+    vertical-align: middle;
+    padding-top: 7%;
+    padding-bottom: 7%;
+  }
+
+  .redColor {
+    color: #ff7575;
+    font-family: "Dubai";
+    font-size: 1rem;
+    font-weight: 600;
+    padding-left: 5%;
+    text-transform: uppercase;
+  }
+
+  .alert-wrapper.sc-ion-alert-md {
+    min-width: 85%;
+    padding-bottom: 15px;
+    box-shadow: 0px 3px 6px #00000029;
+  }
+  .alert-head {
+    background-color: #172344;
+    padding: 8px !important;
+  }
+  .alert-title.sc-ion-alert-md {
+    color: white;
+    font-weight: 580;
+    text-align: center !important;
+    font-size: 1rem;
+    font-family: "Dubai";
+  }
+  .alert-button-role-confirm.sc-ion-alert-md {
+    position: fixed;
+    margin: auto;
+    left: 0;
+    right: 30%;
+    background-color: #73bf7e;
+    color: white;
+    border-radius: 10px;
+    height: 30px;
+    width: 55px;
+  }
+  .alert-title.sc-ion-alert-ios {
+    color: white;
+  }
+  .alert-button-role-cancel.sc-ion-alert-md {
+    position: fixed;
+    margin: auto;
+    left: 30%;
+    right: 0;
+    background-color: #e95a57;
+    color: white;
+    border-radius: 10px;
+    height: 30px;
+    width: 55px;
+  }
+  .alert-button-inner.sc-ion-alert-md {
+    -ms-flex-pack: end;
+    justify-content: center !important;
+  }
+  .alert-head.sc-ion-alert-md + .alert-message.sc-ion-alert-md {
+    font-family: "Dubai";
+    font-weight: bolder;
+  }
+}

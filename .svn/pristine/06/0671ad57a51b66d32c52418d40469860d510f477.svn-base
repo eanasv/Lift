@@ -1,0 +1,64 @@
+@import "../../styles/item_attributes.scss";
+
+.form-element-group {
+  @include form_element_group;
+
+  fieldset {
+    border-style: solid;
+    border-color: #d1d3d8;
+    border-style: solid;
+    border: 0.13rem solid #b8bcc7;
+    border-radius: 0.4rem;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+
+    legend {
+      padding-left: 2px;
+      padding-right: 3px;
+      background-color: #ffffff;
+      color: #b8bcc7;
+      font-family: "Dubai";
+      font-size: 0.8rem;
+    }
+  }
+
+  ion-label {
+    font-weight: bold;
+    font-family: "Dubai";
+    color: #b8bcc7;
+    font-size: 0.9rem;
+  }
+  
+  ion-input {
+    --padding-start: 10px;
+    font-weight: bold;
+    height: 1rem;
+    font-size: 0.9rem;
+    font-family: "Dubai";
+    color: $formFieldBlue;
+    .textInput {
+      font-family: "Dubai";
+      font-weight: 600;
+      font-size: 2rem;
+      color: red;
+    }
+  }
+
+  .errors {
+    margin: 2px;
+    margin-left: 20px;
+    font-size: 0.8rem;
+  }
+
+  .description {
+    margin: 2px;
+    margin-left: 20px;
+    font-size: 0.8rem;
+  }
+
+  .validation-message {
+    color: #FF7575;
+  }
+}

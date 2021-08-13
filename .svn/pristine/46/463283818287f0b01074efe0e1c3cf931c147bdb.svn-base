@@ -1,0 +1,150 @@
+import React, { useEffect, useState } from "react";
+import { IonContent, IonLabel } from "@ionic/react";
+import ContainerCard from "../containerDetails/containerCard/ContainerCard";
+import Header from "../../../components/Header";
+import { useHistory } from "react-router-dom";
+import { httpPostCallWithoutHeaderAndWithBody } from "../../../services/EndPointApi";
+// import Alert from "./Alert";
+// import Footer from "./Footer";
+import * as EndPointURL from "../../../util/EndPointURL";
+import "../containerDetails/ContainerDetails.scss";
+
+export default function ContainerDetails(value) {
+  const [data, setData] = useState<any>({});
+  const [] = useState(false);
+  const [alertPopup, setAlertPopup] = useState(false);
+  const [message, setMessage] = useState("");
+  const [deleteContainer, setDeleteContainer] = useState({});
+  let history = useHistory();
+
+  useEffect(() => {
+    setData({
+      ...data,
+      booking: value?.history?.location?.state?.booking,
+      containers: value?.history?.location?.state?.containers,
+      details: value?.history?.location?.state
+    });
+  }, []);
+
+
+  const canCellationRequest = async (ctn) => {
+
+    try {
+      await console.info("BEFORE DELETE ", JSON.stringify(data.containers));
+      let response = await httpPostCallWithoutHeaderAndWithBody(EndPointURL.cancelRequestContainerUrl , ctn);
+      await console.info("DELETE ", JSON.stringify(ctn.key));
+      if (response?.success) {
+        await delete data.containers[ctn.key];
+        let r = await { booking: data.booking, containers: data.containers };
+        console.info("AFTER DELETED  ", r);
+        await setData(r);
+        history.push("/bookingDetails/"+value?.history?.location?.state?.status);
+      }
+    } catch (error) {
+      await console.log("ERROR +++ {} ", error);
+    }
+  };
+
+  const handleDelete = (item, actionType) => {
+    setAlertPopup(false);
+    if (actionType) {
+      canCellationRequest(deleteContainer);
+      console.log("status", value?.history?.location?.state?.status);
+    } else {
+
+    }
+
+  };
+
+  const alertProps = {
+    isShow: alertPopup,
+    message: message,
+    alertAction: handleDelete,
+    itemName: "cancel the booking for this item? Please view our  cancellation policy",
+  };
+
+  const viewContactDetails = (ctn) => {
+    console.log("   -----    ", ctn);
+    let value = {
+      contact: {
+        consigneeContactNumber: ctn.consigneeContactNumber,
+        consigneeContactName: ctn?.consigneeContactName,
+        phoneNumber: ctn?.phoneNumber,
+        dropAddress: ctn?.dropAddress,
+        addressLine1: ctn?.addressLine1,
+        dropZone:ctn?.dropZone,
+        ctnNumber: ctn?.container_number,
+        dpwTransactionId: ctn?.dpwTransactionId,
+        requestDetailsNumber: ctn?.requestDetailsNumber,
+        latLng: ctn?.latLng,
+      },
+      booking: data.details,
+      isContainerEdit:true
+    };
+    history.push("/addAddress", value);
+  };
+
+  const viewTrack = (item) => {
+    history.push("/track", item);
+  };
+
+  const closeContainer = (ctn, id) => {
+    console.info("data ", JSON.stringify(data.booking));
+    console.info("ctn ", JSON.stringify(ctn));
+    let deleteData = {
+      dpwTransactionId: ctn.dpwTransactionId,
+      requestDetailsNumber: ctn.requestDetailsNumber,
+      container_number: ctn.container_number,
+      refStatus: { code: "CNCL" },
+      key: id,
+    };
+    setAlertPopup(true);
+    setMessage(ctn.container_number);
+    setDeleteContainer(deleteData);
+  };
+
+  const goBack = () => {
+    history.push("/bookingDetails/"+value?.history?.location?.state?.status);
+  }
+
+  const footerProps = {
+    locationProps: value.history,
+  };
+
+  return (
+    <>
+      <Header label={`Booking #${data?.booking}`} action="" customBack={true} backClick={() => goBack()} />
+      <IonContent
+        fullscreen
+        scrollEvents={true}
+        id="container-details"
+      >
+        {data?.containers?.length < 1 ? (
+          <IonLabel>No data to display</IonLabel>
+        ) : (
+            data?.containers?.map((item, id) => (
+              <ContainerCard
+                status={item?.refStatus?.code}
+                key={id}
+                userType={value?.location?.state?.userType}
+                container_number={item?.container_number}
+                consigneeNumber={item?.consigneeDetails}
+                pickUpLocation={item?.pickupLocation}
+                dropLocation={`${item?.dropAddress}`}
+                viewClick={() => {
+                  viewContactDetails(item);
+                }}
+                trackClick={() => viewTrack(item)}
+                closeClick={() => {
+                  closeContainer(item, id);
+                }}
+              />
+            ))
+          )}
+
+        {/* <Alert alertProps={alertProps} /> */}
+      </IonContent>
+      {/* <Footer type={"paymentFooter"} footerProps={footerProps} /> */}
+    </>
+  );
+}

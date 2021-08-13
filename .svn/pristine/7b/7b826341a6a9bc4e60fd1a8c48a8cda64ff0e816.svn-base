@@ -1,0 +1,22 @@
+import { combineReducers } from "redux";
+import CheckAccessToken from "./CheckAccessToken";
+import ApiRequestState from "./ApiRequestState";
+import CheckUserStatus from "./CheckUserStatus";
+import Addresses from './Addresses';
+import ContainerCart from './ContainerCart'
+import DeclarationCart from './DeclarationCart'
+import Trucks from './Trucks'
+import BookTruck from './BookTruck'
+
+const AllReducers = combineReducers({
+  CheckAccessToken: CheckAccessToken,
+  ApiRequestState: ApiRequestState,
+  CheckUserStatus: CheckUserStatus,
+  Addresses:Addresses,
+  ContainerCart:ContainerCart,
+  DeclarationCart:DeclarationCart,
+  Trucks:Trucks,
+  BookTruck:BookTruck
+});
+
+export default AllReducers;

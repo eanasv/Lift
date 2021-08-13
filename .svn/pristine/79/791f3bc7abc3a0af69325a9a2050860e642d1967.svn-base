@@ -1,0 +1,284 @@
+import {
+  IonBackButton,
+  IonButton,
+  IonButtons,
+  IonCard,
+  IonCardContent,
+  IonContent,
+  IonHeader,
+  IonIcon,
+  IonPage,
+  IonRow,
+  IonTitle,
+  IonToolbar,
+} from "@ionic/react";
+import {
+  albumsOutline,
+  arrowDownOutline,
+  callOutline,
+  callSharp,
+  newspaperOutline,
+  optionsOutline,
+  searchOutline,
+  shareOutline,
+  shareSharp,
+} from "ionicons/icons";
+import React from "react";
+import RoundedAvatar from "../../components/Avatar/RoundedAvatar";
+import Icon from "../../components/Icon";
+import { stringToColour } from "../../util/Utilities";
+import { decla } from "../../data";
+
+import "./Declaration.scss";
+import TopMenu from "../../components/TopMenu";
+import * as EndPointURL from "../../util/EndPointURL";
+import * as EndPointApi from "../../services/EndPointApi";
+import ClearReduxStore from "../../util/ClearReduxStore";
+import Store from "../../redux/Store";
+interface MyState {
+  allDeclarations: any[];
+  selected: boolean;
+  opened: boolean;
+  message?: string;
+  disableInfiniteScroll: boolean; //Eanas scroll
+  declarationArray: any[];
+  userType?: any;
+}
+interface MyProps {
+  addresses: [];
+  //addAddress:((address: object) => void);
+  addDeclarationToCart: (item: object) => void;
+  removeDeclarationsFromCart: (item: object) => void;
+  removeAllContainersInCart: () => void;
+  numberOfContainers: any;
+}
+var locationProps: any;
+var longpressed = false;
+var selectedNumber = 0;
+let open = true;
+var scrollLoad = true;
+var pageNumber = 0;
+class Declaration extends React.Component<MyProps, MyState> {
+  public contentRef = React.createRef<HTMLDivElement>();
+  constructor(props: any) {
+    super(props);
+    locationProps = props;
+    this.state = {
+      allDeclarations: [],
+      selected: false,
+      opened: true,
+      message: "",
+      disableInfiniteScroll: false,
+      declarationArray: [],
+      userType: {},
+    };
+    this.contentRef = React.createRef();
+  }
+  componentDidMount = () => {
+    this.setState({ userType: Store.getState().CheckUserStatus.user.userType });
+    longpressed = false;
+    selectedNumber = 0;
+    pageNumber = 0;
+    // this.props.removeAllContainersInCart();
+    var parameter = "";
+    this.getAllDeclaration(parameter);
+    ClearReduxStore();
+  };
+
+  getAllDeclaration = async (param: string) => {
+    if (!param) {
+      param = "pgSize=10&pgNo=0&option=ALL&locale=en";
+    }
+    var data = {
+      url: EndPointURL.declarationUrl + param,
+      callType: "get",
+      header: { headers: "" },
+    };
+    this.setState({ message: "Loading Data" });
+    var response = EndPointApi.fetchAllDeclaration(
+      EndPointURL.declarationUrl + param
+    );
+    console.log(response);
+    // HttpRequest.HttpGetRequest(data)
+    //   .then(async (result) => {
+    //     console.log(result);
+    //     if (!result.success) {
+    //       this.setState({ message: result.data.message });
+    //     }
+    //     if (result.data.elements.length > 0) {
+    //       this.closeSort();
+    //       if (
+    //         // this.state.declarationArray.length > 0 ||
+    //         result.data.elements.length > 0
+    //       ) {
+    //         this.setState({
+    //           declarationArray: await [
+    //             ...this.state.declarationArray,
+    //             ...result.data.elements,
+    //           ],
+    //         });
+    //         console.log(this.state.declarationArray.length);
+    //         this.setState({
+    //           disableInfiniteScroll: this.state.declarationArray.length < 10,
+    //         });
+    //       } else {
+    //         this.setState({
+    //           declarationArray: [],
+    //         });
+    //         this.setState({ message: "No Declarations to display" });
+    //         this.setState({ disableInfiniteScroll: true });
+    //       }
+    //       scrollLoad = false;
+    //       await this.state.declarationArray.forEach((arrayItem: any) => {
+    //         arrayItem.selected = false;
+    //         this.setState({ selected: false });
+    //         arrayItem.containerList.forEach((contanier: any) => {
+    //           contanier.selected = false;
+    //           this.setState({ selected: false });
+    //         });
+    //       });
+    //       this.setState({ allDeclarations: this.state.declarationArray });
+    //     } else {
+    //       console.log(1);
+    //       var parameter = "";
+    //       // this.getAllDeclaration(parameter);
+    //       this.setState({ message: result.data.message });
+    //       this.setState({ message: "No Declarations to display" });
+    //       this.setState({ disableInfiniteScroll: true });
+    //     }
+
+    //     //this.setState({ allDeclarations: offlineData.data.elements });
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //   });
+  };
+  contanerIconProps = {
+    name: "container",
+    slot: "",
+    class: "zoom12",
+  };
+  topMenuItems = [
+    {
+      name: "",
+      icon: optionsOutline,
+      clickedOnTopMenu: () => console.log("clicked1"),
+    },
+    {
+      name: "expired",
+      icon: "",
+      clickedOnTopMenu: () => console.log("clicked2"),
+    },
+    {
+      name: "active",
+      icon: "",
+      clickedOnTopMenu: () => console.log("clicked3"),
+    },
+    {
+      name: "Do Validity",
+      icon: arrowDownOutline,
+      clickedOnTopMenu: () => console.log("clicked4"),
+    },
+    {
+      name: "Containers",
+      icon: arrowDownOutline,
+      clickedOnTopMenu: () => console.log("clicked5"),
+    },
+  ];
+  render() {
+    return (
+      <IonPage className="declaration">
+        <IonHeader>
+          <IonToolbar className="toolbar">
+            <IonButtons slot="start">
+              <IonBackButton
+                style={{ color: "white" }}
+                defaultHref="/tabs/speakers"
+              />
+            </IonButtons>
+            <IonTitle
+              className="ion-text-center"
+              style={{ textAlign: "center" }}
+            >
+              Declaration
+            </IonTitle>
+
+            <IonButtons slot="end">
+              <IonButton>
+                <IonIcon
+                  style={{ color: "white" }}
+                  slot="icon-only"
+                  icon={searchOutline}
+                  ios={searchOutline}
+                  md={searchOutline}
+                ></IonIcon>
+              </IonButton>
+            </IonButtons>
+          </IonToolbar>
+        </IonHeader>
+        <IonContent className="declaration-Content">
+          <IonRow className="horizontal-scroll">
+            <div className="filter-buttons ">
+              <TopMenu topMenuProps={this.topMenuItems} />
+            </div>
+          </IonRow>
+          <div className="container-section">
+            <div className="decl-count">
+              {" "}
+              Displaying {decla.totalElements} declarations
+            </div>
+            <div className="container-list">
+              {decla.elements.map((item, index) => {
+                var color = stringToColour(item.consigneeDetails);
+                return (
+                  <IonCard className="outer-card" key={index}>
+                    <IonCardContent>
+                      <div className="container-card">
+                        <div className="list-logo">
+                          <RoundedAvatar color={color} name={item.comments} />
+                        </div>
+                        <div className="decl-info">
+                          <span className="decl-number">
+                            {item.declarationNumber}
+                          </span>
+                          <span className="decl-comments">
+                            {item.consigneeDetails}
+                          </span>
+                        </div>
+                        <div className="container-count">
+                          <div className="container-logo">
+                            <Icon iconProps={this.contanerIconProps} />
+                          </div>
+                          <div className="container-count-info">
+                            <span>{item.containerList.length}</span>
+                            <span>Containers</span>
+                          </div>
+                        </div>
+                        <div className="dov-info">
+                          <span className="dov-label">DO Validity</span>
+                          <span className="dov-date">
+                            {item.deliveryOrderValidity}
+                          </span>
+                        </div>
+                        <div className="container-status">
+                          {item.status === "New" ? (
+                            <div className="status-active">Active</div>
+                          ) : (
+                            <div className="status-exp">Expired</div>
+                          )}
+                          {/* {!item.active && } */}
+                        </div>
+                      </div>
+                    </IonCardContent>
+                  </IonCard>
+                );
+              })}
+            </div>
+          </div>
+        </IonContent>
+      </IonPage>
+    );
+  }
+}
+
+export default Declaration;

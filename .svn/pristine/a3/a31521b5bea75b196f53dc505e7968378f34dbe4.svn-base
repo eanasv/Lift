@@ -1,0 +1,41 @@
+import { IonAlert } from "@ionic/react";
+import React from "react";
+import "./Alert.scss";
+
+export default function Alert(props: any) {
+
+  function alertAction(actionType) {
+    props.alertProps.alertAction(props.alertProps.item, actionType);
+  }
+  return (
+    <IonAlert
+      id="alert"
+      isOpen={props.alertProps.isShow}
+      onDidDismiss={() => !props.alertProps.isShow}
+      header={"Attention!!"}
+      message={
+        "<div class='text-style'> " +"Are you sure you want to  " +
+        props.alertProps.content +
+        "<div class='redColor'> " +
+        props.alertProps.message +
+        "</div>" + "</div>" 
+      }
+      buttons={[
+        {
+          text: "Yes",
+          role: "confirm",
+          handler: () => {
+            alertAction(true);
+          },
+        },
+        {
+          text: "No",
+          role: "cancel",
+          handler: () => {
+            alertAction(false);
+          },
+        },
+      ]}
+    />
+  );
+}

@@ -1,0 +1,31 @@
+.BookTruck-Location {
+  font-size: 1rem;
+
+  .main-content {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+  ion-toggle {
+    height: 1rem;
+  }
+  ion-col {
+    display: flex;
+    align-items: center;
+  }
+
+  label {
+    font-size: 1rem;
+    font-weight: bold;
+  }
+
+  .alert-message {
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    color: #168fe4;
+    ion-icon {
+      margin-right: 5px;
+    }
+  }
+}

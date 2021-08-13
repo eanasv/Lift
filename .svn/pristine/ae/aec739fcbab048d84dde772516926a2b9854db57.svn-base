@@ -1,0 +1,201 @@
+import {
+  IonContent,
+  IonLabel,
+  IonPage,
+  IonRouterOutlet,
+  IonTabBar,
+  IonTabButton,
+  IonTabs,
+} from "@ionic/react";
+import React, { useState } from "react";
+import { Redirect, Route } from "react-router";
+import BookQuick from "../../components/BookQuick";
+import Header from "../../components/Header";
+import BookTruck from "../booktruck/BookTruck";
+
+import "./QuickBook.scss";
+const QuickBook = () => {
+  const [form, setForm] = useState({
+    declNumber: "",
+    containerNumber: "",
+    truckCount: "",
+    date: "",
+    time: "",
+    truckType: "",
+    droplocation: "",
+    contactPerson: "",
+    contactNumber: "",
+    submitted: false,
+    valid: false,
+  });
+  const [errors, setErrors] = useState<any>({});
+  const [book, setBook] = useState(true);
+  const [pay, setPay] = useState(false);
+
+  const handleChange = (e: any, value: any) => {
+    setForm({
+      ...form,
+      [e.target.name]: value,
+    });
+  };
+  return (
+    <IonPage className="quick-book-page">
+      {/* <Header label="QuickBook" action="home" /> */}
+      <Header
+        label="Declarations"
+        action="home"
+        // action="home"
+        // locationProps={locationProps}
+        // searchClick={this.onSearchClick}
+      />
+      <IonContent className="quick-book-content">
+        <div className="form-div">
+          <IonTabs className="declaration-tab">
+            <IonRouterOutlet>
+              <Redirect exact path="/quickBook" to="/quickBook/book" />
+              <Route
+                path="/quickBook/book"
+                // component={LandingPage}
+                render={() => <BookQuick />}
+                exact={true}
+              />
+              <Route path="/quickBook/payment" component={BookTruck} />
+            </IonRouterOutlet>
+            <IonTabBar slot="top">
+              <IonTabButton tab="location" href="/quickBook/book">
+                <IonLabel>Book</IonLabel>
+              </IonTabButton>
+
+              <IonTabButton tab="Payment" href="/quickBook/payment">
+                <IonLabel>Payment</IonLabel>
+              </IonTabButton>
+            </IonTabBar>
+          </IonTabs>
+
+          {/* <div className="button-div">
+            <IonButton
+              style={
+                book
+                  ? { "--background": "#389BFF", color: "white" }
+                  : { "--background": "white", color: "black" }
+              }
+              onClick={() => {
+                if (!book) {
+                  setBook(true);
+                  setPay(false);
+                }
+              }}
+            >
+              Book
+            </IonButton>
+            <IonButton
+              style={
+                pay
+                  ? { "--background": "#389BFF", color: "white" }
+                  : { "--background": "white", color: "black" }
+              }
+              onClick={() => {
+                if (!pay) {
+                  setPay(true);
+                  setBook(false);
+                }
+              }}
+            >
+              Pay
+            </IonButton>
+          </div>
+          <TxtInput
+            name={"declNum"}
+            value={form.declNumber}
+            label="Declaration Number"
+            errors={errors.declNumber}
+            type="text"
+            required={true}
+            onChange={handleChange}
+            datatype="TEXT"
+            placeholder="Declaration Number"
+          />
+          <TxtInput
+            name={"containerNumber"}
+            value={form.containerNumber}
+            label="Container Number"
+            errors={errors.containerNumber}
+            type="text"
+            required={true}
+            onChange={handleChange}
+            datatype="TEXT"
+            placeholder="Enter Number"
+          />
+          <TxtInput
+            name={"truckCount"}
+            value={form.truckCount}
+            label="Truck Count"
+            errors={errors.truckCount}
+            type="text"
+            required={true}
+            onChange={handleChange}
+            datatype="TEXT"
+            placeholder="Enter Count"
+          />
+          <TxtInput
+            name={"date"}
+            value={form.date}
+            label="Date"
+            errors={errors.date}
+            type="text"
+            required={true}
+            onChange={handleChange}
+            datatype="TEXT"
+            placeholder=""
+          />
+          <TxtInput
+            name={"time"}
+            value={form.time}
+            label="Time"
+            errors={errors.time}
+            type="text"
+            required={true}
+            onChange={handleChange}
+            datatype="TEXT"
+            placeholder=""
+          />
+          <TxtInput
+            name={"truckType"}
+            value={form.truckType}
+            label="Truck Type"
+            errors={errors.truckType}
+            type="text"
+            required={true}
+            onChange={handleChange}
+            datatype="TEXT"
+            placeholder="Enter Type"
+          />
+          <TxtInput
+            name={"droplocation"}
+            value={form.droplocation}
+            label="Drop Location"
+            errors={errors.droplocation}
+            type="text"
+            required={true}
+            onChange={handleChange}
+            datatype="TEXT"
+            placeholder="Enter Address"
+          />
+          <TxtInput
+            name={"contactPerson"}
+            value={form.contactPerson}
+            label="COntact Person"
+            errors={errors.contactPerson}
+            type="text"
+            required={true}
+            onChange={handleChange}
+            datatype="TEXT"
+            placeholder="Name"
+          /> */}
+        </div>
+      </IonContent>
+    </IonPage>
+  );
+};
+
+export default QuickBook;

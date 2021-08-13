@@ -1,0 +1,59 @@
+@import "../../../../styles/item_attributes.scss";
+
+#container-card {
+    font-weight: 600;
+    font-family: "Dubai";
+        .lightShadow {
+            @include light_shadow;
+            .bottomDivider-truck {
+                border-bottom: 2px solid #c7c2c2;
+                margin-left: 1.1rem;
+                width: 91.5%;
+                .marginLeftTop-truck {
+                    margin-top: 10px;
+                    margin-bottom: 10px;
+                    padding: 0;
+                    width: 100%;
+                  }
+                  .regular-font {
+                    color: #848484;
+                    font-size: 1rem;
+                  }
+                  .data-font {
+                    color: #0e1b3d;
+                    font-size: 1.1rem;
+                  } 
+              }
+              .booking-row {
+                height: 40px;
+                .marginLeftTop-truck {
+                    margin-top: 10px;
+                    margin-bottom: 10px;
+                    padding: 0;
+                    width: 100%;
+                  }
+                .right-divider {
+                    border-right: 1px solid #c5c5c5;
+                    margin: 0px;
+                    height: 80%;
+                    margin-top: 12px;
+                    text-align: center;
+                  }
+                  .right-divider-none {
+                    margin: 0px;
+                    height: 80%;
+                    margin-top: 12px;
+                    text-align: center;
+                  }
+                  .right-divide-button {
+                    bottom: 12px;
+                    position: relative;
+                    zoom: 1.4;
+                    .close-button {
+                        zoom: 0.8;
+                    }
+                  }
+              }
+        }
+
+}

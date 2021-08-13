@@ -1,0 +1,31 @@
+import * as LoginUserTypes from "../actionTypes/AllActionTypes";
+var initialState ={
+  requestTruckType:[],
+  containerList:[],
+  multiLocAndTime:false,
+
+}
+
+const BookTruck = (state = initialState, action) => {
+  switch (action.type) {
+    case LoginUserTypes.BOOK_TRUCK_MULTILOCATION:
+        state.containerList=action.payLoad;
+        state.multiLocAndTime=true;
+        state.requestTruckType=[]
+      return state
+   case LoginUserTypes.BOOK_TRUCK_ADD_TRUCK_DETAILS:
+     state.requestTruckType=action.payLoad;
+     return state;
+   case LoginUserTypes.BOOK_TRUCK_SINGLE_LOCATION:
+
+    state.containerList=action.payLoad
+     state.multiLocAndTime=false;
+     return state;
+     case LoginUserTypes.BOOK_TRUCK_CLEAR:
+       return state=initialState;
+    default:
+      return state;
+  }
+};
+
+export default BookTruck;

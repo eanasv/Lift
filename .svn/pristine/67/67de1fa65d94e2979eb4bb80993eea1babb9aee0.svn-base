@@ -1,0 +1,117 @@
+import React, { useEffect } from "react";
+import {
+  IonButton,
+  IonCard,
+  IonCardContent,
+  IonRow,
+  IonCol,
+  IonIcon,
+} from "@ionic/react";
+import "../containerCard/ContainerCard.scss";
+
+interface BookingContainerParam {
+  container_number?: string;
+  consigneeNumber?: string;
+  pickUpLocation?: string;
+  dropLocation?: string;
+  status?: string;
+  trackClick?(e: any): void;
+  closeClick?(e: any): void;
+  viewClick?(e: any): void;
+  userType?: string;
+}
+
+const ContainerCard: React.FC<BookingContainerParam> = (
+  BookingContainerParam
+) => {
+  useEffect(() => {
+    console.log("BookingContainerParam", BookingContainerParam)
+  }, []);
+
+  return (
+    <div id="container-card">
+      <IonCard className="lightShadow">
+        <IonCardContent style={{paddingLeft:"0", paddingRight:"0"}}>
+          <IonRow className="bottomDivider-truck" >
+            <IonCol className="marginLeftTop-truck">
+              <div className="ion-float-left">
+                <sub className="regular-font">Container#</sub>
+                <div className="data-font">
+                  {BookingContainerParam.container_number}
+                </div>
+              </div>
+            </IonCol>
+            <IonCol className="marginLeftTop-truck">
+              { BookingContainerParam.userType === "CLEARING_AGENT" ? (
+                <div className="">
+                  <sub className="regular-font">Consignee details</sub>
+                  <div className="data-font">
+                    {BookingContainerParam.consigneeNumber}
+                  </div>
+                </div>
+              ) : (
+                <></>
+              )}
+            </IonCol>
+          </IonRow>
+          <IonRow className="bottomDivider-truck">
+            <IonCol size="4.5" className="marginLeftTop-truck">
+              <div className="ion-float-left">
+                <sub className="regular-font">Pickup Location</sub>
+                <div className="data-font">
+                  {BookingContainerParam.pickUpLocation}
+                </div>
+              </div>
+            </IonCol>
+            <IonCol className="marginLeftTop-truck">
+              <div className="ion-float-right">
+                <sub className="regular-font">Drop Location</sub>
+                <div className="data-font">
+                  {BookingContainerParam.dropLocation}
+                </div>
+              </div>
+            </IonCol>
+          </IonRow>
+          <IonRow className="booking-row">
+            <IonCol className="right-divider marginLeftTop-truck">
+              <IonButton
+                fill="clear"
+                onClick={BookingContainerParam.trackClick}
+                className="right-divide-button"
+              >
+                <IonIcon src="assets/icon/truck-blue.svg" />
+              </IonButton>
+            </IonCol>
+            <IonCol className={(BookingContainerParam.status == "PEND" || BookingContainerParam.status == "PTOK") ? 
+            "right-divider marginLeftTop-truck" : "right-divider-none marginLeftTop-truck"}>
+              <IonButton
+                className="right-divide-button"
+                fill="clear"
+                onClick={BookingContainerParam.viewClick}
+              >
+                <IonIcon src="assets/icon/eye-blue.svg" />
+              </IonButton>
+            </IonCol>
+            <IonCol
+              className="right-divider-none marginLeftTop-truck"
+              hidden={
+                BookingContainerParam.status != "PEND" &&
+                BookingContainerParam.status != "PTOK"
+              }
+            >
+              <IonButton
+                fill="clear"
+                onClick={BookingContainerParam.closeClick}
+                className="right-divide-button"
+              >
+                <IonIcon className="close-button" src="assets/icon/close.svg" />
+              </IonButton>
+            </IonCol>
+          </IonRow>
+        </IonCardContent>
+      </IonCard>
+    </div>
+  );
+};
+
+export default React.memo(ContainerCard);

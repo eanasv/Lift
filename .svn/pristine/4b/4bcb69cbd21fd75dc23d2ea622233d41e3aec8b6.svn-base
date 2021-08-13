@@ -1,0 +1,103 @@
+import { IonLabel, IonSelect, IonSelectOption, IonText } from "@ionic/react";
+import React, { useEffect, useState } from "react";
+import "./DrpdownInput.scss";
+
+interface DrpDownInputProps {
+  label?: string;
+  name: any;
+  type: any;
+  value?: any;
+  onChange: any;
+  required?: any;
+  errors?: any;
+  pattern?: any;
+  datatype?: any;
+  description?: string;
+  placeholder: string;
+  icon?: any;
+  onBlur?: any;
+  listValues?: Array<any>;
+  disabled?:any;
+  selectedName?:any;
+}
+const DrpdownInput: React.FC<DrpDownInputProps> = ({
+  label,
+  name,
+  value,
+  onChange,
+  errors,
+  description,
+  placeholder,
+  listValues,
+  disabled,
+  selectedName
+}) => {
+  // const [selectedName, setselectedName] = useState();
+  const [valueD, setValueD] = useState({});
+
+  useEffect(() => {
+    setValueD({label:selectedName, value: value});
+  },[]);
+
+  const onInpChange = (e) => {
+    let val = e.target.value;
+    console.log(e.target.value);
+    //setselectedName()
+    setValueD(val);
+    onChange(e, val);
+  };
+
+  const options = {
+    cssClass: 'my-custom-interface',
+  };
+
+  return (
+    <div className="form-element-group">
+      <fieldset>
+        <legend>{label}</legend>
+        <IonSelect
+          name={name}
+          placeholder={placeholder}
+          value={valueD}
+          onIonChange={onInpChange}
+          cancel-text
+          interface="popover"
+          // style={{width: "80%", left: "10% !important", right:" 10% !important", borderRadius:" 5px"}}
+          selectedText={selectedName}
+          interfaceOptions={options}
+          disabled={disabled}
+        >
+          {listValues.map((item, index) => (
+            item.label ? (
+              <IonSelectOption key={index} value={item} className="selectAddAddr" >
+                {item.label}
+              </IonSelectOption>
+            ) : (
+              <IonSelectOption key={index} value={item}>
+                {item}
+              </IonSelectOption>
+            ) 
+            // <IonSelectOption key={index} value={item + 1}>
+            //   {item}
+            // </IonSelectOption>
+          ))}
+        </IonSelect>
+      </fieldset>
+
+      <div className="">
+        {errors && (
+          <IonText color="danger" className="validation-message">
+            <IonLabel className="ion-padding-start">{errors}</IonLabel>
+          </IonText>
+        )}
+      </div>
+      {/* {validation && description && ( */}
+      <IonText color="danger" className="validation-message">
+        <IonLabel className="ion-padding-start">{description}</IonLabel>
+      </IonText>
+      {/* )} */}
+    </div>
+  );
+};
+
+export default DrpdownInput;

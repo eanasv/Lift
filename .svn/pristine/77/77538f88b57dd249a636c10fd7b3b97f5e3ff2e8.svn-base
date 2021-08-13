@@ -1,0 +1,13 @@
+import { IonButton, IonIcon } from "@ionic/react";
+import React from "react";
+
+export default function TopMenu(props) {
+  return props.topMenuProps.map((item, index) => (
+    <div onClick={() => item.clickedOnTopMenu()}>
+      <IonButton className="circ-button" size="small">
+        {item.icon && <IonIcon icon={item.icon}></IonIcon>}
+        {item.name && item.name}
+      </IonButton>
+    </div>
+  ));
+}

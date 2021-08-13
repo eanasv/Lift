@@ -1,0 +1,114 @@
+import React, { useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
+import { IonPage, IonContent, IonGrid } from "@ionic/react";
+import StatusCard from "./statusCard/StatusCard";
+import * as EndPointURL from "../../../util/EndPointURL";
+import Header from "../../../components/Header";
+import { httpGetCallWithoutHeader } from "../../../services/EndPointApi";
+import Store from "../../../redux/Store";
+
+export default function Status(props) {
+  console.log(props);
+  let history = useHistory();
+  const [countsRequest, setCountsRequest] = useState({}); 
+  const [agent, setAgent] = useState(); 
+  Store.subscribe(() => {
+    setAgent(Store.getState().CheckUserStatus.user.selectedAgent);
+    console.log("calling store");
+  });
+
+  useEffect(() => {
+    getCountRequest();
+    console.log('call status' , agent);
+  }, [agent]);
+
+  const onPendingClick = () => {
+    history.push("/bookingDetails/PEND");
+  };
+
+  const onConfirmClick = () => {
+    history.push("/bookingDetails/CONF");
+  };
+  const onProgressClick = () => {
+    history.push("/bookingDetails/INPRO");
+  };
+  const onDelivredClick = () => {
+    history.push("/bookingDetails/FCL_DEL");
+  };
+  const onCompletedClick = () => {
+    history.push("/bookingDetails/MT_DEL");
+  };
+
+  const getCountRequest = async () => {
+    var response = await httpGetCallWithoutHeader(EndPointURL.fetchRequestStatusCountsUrl);
+    if (await response.success) {
+      var respObj = response.data.data.dataItems[0];
+        Object.keys(respObj).forEach(function (key) {
+          respObj[key] = respObj[key] < 10 ? "0" + respObj[key] : respObj[key];
+        });
+  
+        await setCountsRequest({
+          ...countsRequest,
+          result: respObj,
+        });
+    }
+  };
+
+  const onSearchClick = () => {
+    history.push("/search-booking");
+  };
+
+  const goBack = () => {
+    history.push("/tabs/landing");
+  }
+
+  return (
+    <>
+      <IonPage id="status-page">
+        <Header
+          label="Status"
+          action="search"
+          searchClick={onSearchClick}
+          showAgent={true}
+          customBack={true} 
+          backClick={() => goBack()}
+          agentHeader={true}
+        />
+        <IonContent fullscreen padding-top className="page-content">
+          <IonGrid margin-top>
+            <StatusCard
+              type="Pending"
+              //total={(countsRequest.result?.PEND + "").padStart(2, "0") ?? 0}
+              total= {countsRequest.result?.PEND}
+              handleClick={onPendingClick}
+            />
+            <StatusCard
+              type="Confirmed"
+              //total={(countsRequest.result?.CONF + "").padStart(2, "0") ?? 0}
+              total={countsRequest.result?.CONF}
+              handleClick={onConfirmClick}
+            />
+            <StatusCard
+              type="In Progress"
+              // total={(countsRequest.result?.INPRO + "").padStart(2, "0") ?? 0}
+              total={countsRequest.result?.INPRO}
+              handleClick={onProgressClick}
+            />
+            <StatusCard
+              type="Delivered"
+              //total={(countsRequest.result?.FCL_DEL + "").padStart(2, "0") ?? 0}
+              total={countsRequest.result?.FCL_DEL}
+              handleClick={onDelivredClick}
+            />
+            <StatusCard
+              type="Completed"
+              //total={(countsRequest.result?.MT_DEL + "").padStart(2, "0") ?? 0}
+              total={countsRequest.result?.MT_DEL}
+              handleClick={onCompletedClick}
+            />
+          </IonGrid>
+        </IonContent>
+      </IonPage>
+    </>
+  );
+}
